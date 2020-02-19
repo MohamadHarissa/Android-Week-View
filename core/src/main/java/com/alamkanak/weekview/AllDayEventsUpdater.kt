@@ -1,22 +1,16 @@
 package com.alamkanak.weekview
 
 import android.graphics.RectF
-import android.graphics.Typeface
+import android.text.SpannableString
 import android.text.SpannableStringBuilder
 import android.text.StaticLayout
-import android.text.TextPaint
-import android.text.TextUtils
-import android.text.TextUtils.TruncateAt.END
-import android.text.style.StyleSpan
-import com.alamkanak.weekview.WeekViewEvent.TextResource
 import kotlin.math.roundToInt
 
 internal class AllDayEventsUpdater<T : Any>(
     private val view: WeekView<T>,
     private val config: WeekViewConfigWrapper,
     private val cache: WeekViewCache<T>,
-    private val chipCache: EventChipCache<T>,
-    private val emojiTextProcessor: EmojiTextProcessor = EmojiTextProcessor()
+    private val chipCache: EventChipCache<T>
 ) : Updater {
 
     private val context = view.context
@@ -66,11 +60,13 @@ internal class AllDayEventsUpdater<T : Any>(
 
         if (chipRect.isValidEventBounds) {
             val textLayout = calculateChipTextLayout(eventChip)
-            textLayout?.let { layout ->
-                cache.allDayEventLayouts[eventChip] = layout
+            if (textLayout != null) {
+                cache.allDayEventLayouts[eventChip] = textLayout
             }
         }
     }
+
+    private val spannableStringBuilder = SpannableStringBuilder()
 
     private fun calculateChipTextLayout(
         eventChip: EventChip<T>
@@ -96,31 +92,26 @@ internal class AllDayEventsUpdater<T : Any>(
             return dummyTextLayout
         }
 
-        val title = when (val resource = event.titleResource) {
-            is TextResource.Id -> context.getString(resource.resId)
-            is TextResource.Value -> resource.text
-            null -> ""
-        }
+        spannableStringBuilder.clear()
 
-        val modifiedTitle = emojiTextProcessor.process(title)
-        val text = SpannableStringBuilder(modifiedTitle)
-        text.setSpan(StyleSpan(Typeface.BOLD))
+        val title = event.titleResource.toSpannableString(context)
+        spannableStringBuilder.append(title)
 
-        val location = when (val resource = event.locationResource) {
-            is TextResource.Id -> context.getString(resource.resId)
-            is TextResource.Value -> resource.text
-            null -> null
-        }
-
+        val location = event.locationResource?.toSpannableString(context)
         if (location != null) {
-            val modifiedLocation = emojiTextProcessor.process(location)
-            text.append(' ').append(modifiedLocation)
+            spannableStringBuilder.append(" ")
+            spannableStringBuilder.append(location)
         }
+
+        val text = spannableStringBuilder.build()
 
         val availableWidth = width.toInt()
 
         val textPaint = event.getTextPaint(context, config)
-        val textLayout = TextLayoutBuilder.build(text, textPaint, availableWidth)
+        val textLayout = text.toTextLayout(
+            textPaint = textPaint,
+            width = availableWidth
+        )
         val lineHeight = textLayout.height / textLayout.lineCount
 
         // For an all day event, we display just one line
@@ -138,13 +129,13 @@ internal class AllDayEventsUpdater<T : Any>(
     ): StaticLayout {
         if (dummyTextLayout == null) {
             val textPaint = event.getTextPaint(context, config)
-            dummyTextLayout = TextLayoutBuilder.build("", textPaint, width = 0)
+            dummyTextLayout = SpannableStringBuilder("").toTextLayout(textPaint = textPaint, width = 0)
         }
         return checkNotNull(dummyTextLayout)
     }
 
     private fun EventChip<T>.ellipsizeText(
-        text: CharSequence,
+        text: SpannableString,
         availableWidth: Int,
         existingTextLayout: StaticLayout
     ): StaticLayout {
@@ -160,7 +151,10 @@ internal class AllDayEventsUpdater<T : Any>(
             return existingTextLayout
         }
 
-        return TextLayoutBuilder.build(ellipsized, textPaint, width)
+        return ellipsized.toTextLayout(
+            textPaint = textPaint,
+            width = width
+        )
     }
 
     private val RectF.isValidEventBounds: Boolean
@@ -177,10 +171,4 @@ internal class AllDayEventsUpdater<T : Any>(
     private operator fun RectF.component3() = right
 
     private operator fun RectF.component4() = bottom
-
-    private fun CharSequence.ellipsized(
-        textPaint: TextPaint,
-        availableArea: Int,
-        truncateAt: TextUtils.TruncateAt = END
-    ): CharSequence = TextUtils.ellipsize(this, textPaint, availableArea.toFloat(), truncateAt)
 }

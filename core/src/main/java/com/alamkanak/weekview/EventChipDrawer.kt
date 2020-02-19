@@ -4,18 +4,11 @@ import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.RectF
-import android.graphics.Typeface
-import android.text.SpannableStringBuilder
 import android.text.StaticLayout
-import android.text.style.StyleSpan
-import androidx.core.content.ContextCompat
-import com.alamkanak.weekview.WeekViewEvent.ColorResource
-import com.alamkanak.weekview.WeekViewEvent.TextResource
 
 internal class EventChipDrawer<T>(
     private val context: Context,
-    private val config: WeekViewConfigWrapper,
-    private val emojiTextProcessor: EmojiTextProcessor = EmojiTextProcessor()
+    private val config: WeekViewConfigWrapper
 ) {
 
     private val textFitter = TextFitter<T>(context, config)
@@ -153,27 +146,6 @@ internal class EventChipDrawer<T>(
             return
         }
 
-        val title = when (val resource = event.titleResource) {
-            is TextResource.Id -> context.getString(resource.resId)
-            is TextResource.Value -> resource.text
-            null -> throw IllegalStateException("Invalid title resource: $resource")
-        }
-
-        val location = when (val resource = event.locationResource) {
-            is TextResource.Id -> context.getString(resource.resId)
-            is TextResource.Value -> resource.text
-            null -> null
-        }
-
-        val modifiedTitle = emojiTextProcessor.process(title)
-        val text = SpannableStringBuilder(modifiedTitle)
-        text.setSpan(StyleSpan(Typeface.BOLD))
-
-        val modifiedLocation = location?.let { emojiTextProcessor.process(it) }
-        if (modifiedLocation != null) {
-            text.appendln().append(modifiedLocation)
-        }
-
         val chipHeight = (rect.bottom - rect.top - fullVerticalPadding).toInt()
         val chipWidth = (rect.right - rect.left - fullHorizontalPadding).toInt()
 
@@ -181,15 +153,21 @@ internal class EventChipDrawer<T>(
             return
         }
 
-        val didAvailableAreaChange =
-            eventChip.didAvailableAreaChange(rect, fullHorizontalPadding, fullVerticalPadding)
+        val didAvailableAreaChange = eventChip.didAvailableAreaChange(
+            area = rect,
+            horizontalPadding = fullHorizontalPadding,
+            verticalPadding = fullVerticalPadding
+        )
         val isCached = textLayoutCache.containsKey(event.id)
 
         if (didAvailableAreaChange || !isCached) {
+            val title = event.titleResource.toSpannableString(context)
+            val location = event.locationResource?.toSpannableString(context)
+
             textLayoutCache[event.id] = textFitter.fit(
                 eventChip = eventChip,
-                title = modifiedTitle,
-                location = modifiedLocation,
+                title = title,
+                location = location,
                 chipHeight = chipHeight,
                 chipWidth = chipWidth
             )
@@ -207,10 +185,7 @@ internal class EventChipDrawer<T>(
         paint: Paint
     ) {
         val resource = event.style.getBackgroundColorOrDefault(config)
-        paint.color = when (resource) {
-            is ColorResource.Id -> ContextCompat.getColor(context, resource.resId)
-            is ColorResource.Value -> resource.color
-        }
+        paint.color = resource.resolve(context)
         paint.isAntiAlias = true
         paint.strokeWidth = 0f
         paint.style = Paint.Style.FILL
@@ -220,11 +195,7 @@ internal class EventChipDrawer<T>(
         event: WeekViewEvent<T>,
         paint: Paint
     ) {
-        paint.color = when (val resource = event.style.borderColorResource) {
-            is ColorResource.Id -> ContextCompat.getColor(context, resource.resId)
-            is ColorResource.Value -> resource.color
-            null -> 0
-        }
+        paint.color = event.style.borderColorResource?.resolve(context) ?: 0
         paint.isAntiAlias = true
         paint.strokeWidth = event.style.getBorderWidth(context).toFloat()
         paint.style = Paint.Style.STROKE

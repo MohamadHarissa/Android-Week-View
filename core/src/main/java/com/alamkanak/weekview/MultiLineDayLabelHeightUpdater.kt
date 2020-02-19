@@ -58,15 +58,19 @@ internal class MultiLineDayLabelHeightUpdater<T>(
         return buildStaticLayout(dayLabel, TextPaint(textPaint))
     }
 
-    private fun buildStaticLayout(dayLabel: String, textPaint: TextPaint): StaticLayout {
-        val width = config.totalDayWidth.toInt()
-        return TextLayoutBuilder.build(dayLabel, textPaint, width)
-    }
+    private fun buildStaticLayout(
+        dayLabel: String,
+        textPaint: TextPaint
+    ): StaticLayout = dayLabel.toTextLayout(
+        textPaint = textPaint,
+        width = config.totalDayWidth.toInt()
+    )
 
-    private fun provideAndCacheDayLabel(key: Int, day: Calendar): String {
-        return config.dateTimeInterpreter.interpretDate(day).also {
-            cache.dayLabelCache.put(key, it)
-        }
+    private fun provideAndCacheDayLabel(
+        key: Int,
+        day: Calendar
+    ): String = config.dateTimeInterpreter.interpretDate(day).also {
+        cache.dayLabelCache.put(key, it)
     }
 
     private fun <E> SparseArray<E>.get(key: Int, providerIfEmpty: () -> E): E {

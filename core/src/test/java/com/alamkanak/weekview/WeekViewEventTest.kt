@@ -1,12 +1,18 @@
 package com.alamkanak.weekview
 
+import android.os.Build
+import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.alamkanak.weekview.model.Event
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Test
+import org.junit.runner.RunWith
 import org.mockito.Mockito
 import org.mockito.MockitoAnnotations
+import org.robolectric.annotation.Config
 
+@RunWith(AndroidJUnit4::class)
+@Config(sdk = [Build.VERSION_CODES.P])
 class WeekViewEventTest {
 
     private val config = Mockito.mock(WeekViewConfigWrapper::class.java)

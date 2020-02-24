@@ -45,11 +45,11 @@ fun today(): LocalDate = LocalDate.now()
 
 fun firstDayOfYear(): LocalDate = LocalDate.of(today().year, 1, 1)
 
-fun getDefaultDateFormat(numberOfDays: Int): SimpleDateFormat {
+fun getDefaultDateFormat(numberOfDays: Int): java.text.DateFormat {
     return when (numberOfDays) {
-        7 -> SimpleDateFormat("EEEEE M/dd", Locale.getDefault()) // display the first character
-        1 -> SimpleDateFormat("EEEE M/dd", Locale.getDefault()) // display full weekday
-        else -> SimpleDateFormat("EEE M/dd", Locale.getDefault()) // display first three characters
+        7 -> SimpleDateFormat.getDateInstance(SimpleDateFormat.SHORT, Locale.getDefault()) // display the first character
+        1 -> SimpleDateFormat.getDateInstance(SimpleDateFormat.LONG, Locale.getDefault()) // display full weekday
+        else -> SimpleDateFormat.getDateInstance(SimpleDateFormat.SHORT, Locale.getDefault()) // display first three characters
     }
 }
 

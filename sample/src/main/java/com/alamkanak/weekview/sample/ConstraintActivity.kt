@@ -10,6 +10,7 @@ import com.alamkanak.weekview.sample.apiclient.Event
 import com.alamkanak.weekview.sample.database.EventsDatabase
 import com.alamkanak.weekview.sample.database.FakeEventsDatabase
 import kotlinx.android.synthetic.main.activity_constraint.*
+import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -72,7 +73,7 @@ class ConstraintActivity : AppCompatActivity(), EventClickListener<Event>, Month
     private fun setupDateTimeInterpreter() {
         weekView.dateTimeInterpreter = object : DateTimeInterpreter {
 
-            private val sdfDate = SimpleDateFormat("E dd", Locale.getDefault())
+            private var sdfDate = DateFormat.getDateInstance()
 
             override fun interpretDate(date: Calendar): String {
                 val result = sdfDate.format(date.time).replace(" ".toRegex(), "\n")
@@ -86,6 +87,10 @@ class ConstraintActivity : AppCompatActivity(), EventClickListener<Event>, Month
 
                 val sdfTime = SimpleDateFormat("HH:mm", Locale.getDefault())
                 return sdfTime.format(calendar.time)
+            }
+
+            override fun setDateFormat(dateFormat: DateFormat) {
+                sdfDate = dateFormat
             }
         }
     }

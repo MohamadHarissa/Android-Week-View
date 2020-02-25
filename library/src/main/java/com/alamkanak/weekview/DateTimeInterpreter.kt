@@ -1,6 +1,7 @@
 package com.alamkanak.weekview
 
 import android.content.Context
+import java.text.DateFormat
 import java.util.*
 
 /**
@@ -9,6 +10,7 @@ import java.util.*
 interface DateTimeInterpreter {
     fun interpretDate(date: Calendar): String
     fun interpretTime(hour: Int): String
+    fun setDateFormat(dateFormat: DateFormat)
 }
 
 class DefaultDateTimeInterpreter(
@@ -16,7 +18,7 @@ class DefaultDateTimeInterpreter(
         numberOfDays: Int
 ) : DateTimeInterpreter {
 
-    private var sdfDate = DateUtils.getDefaultDateFormat(numberOfDays)
+    private var sdfDate = DateFormat.getDateInstance();
     private val sdfTime = DateUtils.getDefaultTimeFormat(context)
     private val calendar = Calendar.getInstance()
 
@@ -34,4 +36,7 @@ class DefaultDateTimeInterpreter(
         return sdfTime.format(calendar.time)
     }
 
+    override fun setDateFormat(dateFormat : DateFormat){
+        sdfDate = dateFormat
+    }
 }

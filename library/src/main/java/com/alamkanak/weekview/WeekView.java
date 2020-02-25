@@ -14,6 +14,7 @@ import android.util.Pair;
 import android.view.MotionEvent;
 import android.view.View;
 
+import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.List;
 
@@ -48,6 +49,7 @@ public final class WeekView<T> extends View
     private final BackgroundGridDrawer backgroundGridDrawer;
     private final NowLineDrawer nowLineDrawer;
 
+    private DateFormat dateFormat;
     private final EventChipsProvider<T> eventChipsProvider;
 
     public WeekView(Context context) {
@@ -81,6 +83,11 @@ public final class WeekView<T> extends View
 
         eventChipsProvider = new EventChipsProvider<>(configWrapper, cache, viewState);
         eventChipsProvider.setWeekViewLoader(getWeekViewLoader());
+        dateFormat = DateFormat.getDateInstance();
+    }
+
+    public void setDateFormat(DateFormat dateFormat){
+        this.dateFormat = dateFormat;
     }
 
     static int getViewWidth() {
@@ -288,6 +295,7 @@ public final class WeekView<T> extends View
             viewState.setScrollToHour(hour);
         }
 
+        interpreter.setDateFormat(dateFormat);
         invalidate();
     }
 

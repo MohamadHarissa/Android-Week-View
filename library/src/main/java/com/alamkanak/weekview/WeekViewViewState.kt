@@ -6,7 +6,7 @@ import java.util.*
 internal class WeekViewViewState {
 
     var scrollToDay: Calendar? = null
-    var scrollToHour: Int? = null
+    var scrollToHour: Float? = null
 
     var isFirstDraw = true
 
@@ -52,7 +52,7 @@ internal class WeekViewViewState {
 
     internal interface UpdateListener {
         fun goToDate(date: Calendar)
-        fun goToHour(hour: Int)
+        fun goToHour(hour: Float)
     }
 
 }

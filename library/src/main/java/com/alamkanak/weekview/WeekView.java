@@ -71,7 +71,6 @@ public final class WeekView<T> extends View
         viewState = new WeekViewViewState();
 
         gestureHandler = new WeekViewGestureHandler<>(context, this, config, cache);
-
         eventsDrawer = new EventsDrawer<>(config);
         timeColumnDrawer = new TimeColumnDrawer(config);
 
@@ -1204,8 +1203,8 @@ public final class WeekView<T> extends View
 
         final double desiredOffset = dayHeight - viewHeight;
         verticalOffset = min((float)desiredOffset, verticalOffset);
-
-        config.drawingConfig.currentOrigin.y = -verticalOffset;
+        gestureHandler.scrollTo((int)config.drawingConfig.currentOrigin.x, (int)config.drawingConfig.currentOrigin.y, 0, (int)-verticalOffset, 100);
+        //config.drawingConfig.currentOrigin.y = -verticalOffset;
         invalidate();
     }
 

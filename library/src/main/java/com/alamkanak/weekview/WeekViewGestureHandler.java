@@ -441,4 +441,7 @@ final class WeekViewGestureHandler<T> extends GestureDetector.SimpleOnGestureLis
         void onScrolled();
     }
 
+    public void scrollTo(int startX, int startY, int distanceX, int distanceY, int duration){
+        scroller.startScroll(startX, startY, distanceX, distanceY, duration);
+    }
 }

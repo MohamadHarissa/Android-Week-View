@@ -1189,7 +1189,10 @@ public final class WeekView<T> extends View
      *
      * @param hour The hour to scroll to in 24-hour format. Supported values are 0-24.
      */
-    public void goToHour(int hour) {
+    public void goToHour(int hour){
+        goToHour(hour, 0);
+    }
+    public void goToHour(int hour ,int duration) {
         if (viewState.areDimensionsInvalid) {
             viewState.setScrollToHour(hour);
             return;
@@ -1203,8 +1206,10 @@ public final class WeekView<T> extends View
 
         final double desiredOffset = dayHeight - viewHeight;
         verticalOffset = min((float)desiredOffset, verticalOffset);
-        gestureHandler.scrollTo((int)config.drawingConfig.currentOrigin.x, (int)config.drawingConfig.currentOrigin.y, 0, (int)-verticalOffset, 100);
-        //config.drawingConfig.currentOrigin.y = -verticalOffset;
+        if(duration >0)
+            gestureHandler.scrollTo((int)config.drawingConfig.currentOrigin.x, (int)config.drawingConfig.currentOrigin.y, 0, (int)-verticalOffset, duration);
+        else
+            config.drawingConfig.currentOrigin.y = -verticalOffset;
         invalidate();
     }
 

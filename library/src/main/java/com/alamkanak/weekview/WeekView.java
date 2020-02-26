@@ -1207,11 +1207,7 @@ public final class WeekView<T> extends View
         verticalOffset = min((float)desiredOffset, verticalOffset);
         float originY = config.drawingConfig.currentOrigin.y;
         if(duration >0) {
-            System.out.println("desiredOffset = " + desiredOffset);
-            System.out.println("verticalOffset = " + verticalOffset);
-            System.out.println("y "+ originY);
-            System.out.println("distance "+(originY -verticalOffset));
-            gestureHandler.scrollTo((int) config.drawingConfig.currentOrigin.x, (int) originY, 0, (int) (originY - verticalOffset), duration);
+            gestureHandler.scrollTo((int) config.drawingConfig.currentOrigin.x, (int) originY, 0, (int) (- originY - verticalOffset), duration);
             invalidate();
             config.drawingConfig.currentOrigin.y = -verticalOffset;
         }

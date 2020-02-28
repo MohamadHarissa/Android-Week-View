@@ -141,7 +141,7 @@ public class WeekViewEvent<T> implements WeekViewDisplayable, Comparable<WeekVie
         this.color = color;
     }
 
-    boolean isAllDay() {
+    public boolean isAllDay() {
         return isAllDay;
     }
 

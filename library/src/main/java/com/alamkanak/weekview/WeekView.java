@@ -489,6 +489,10 @@ public final class WeekView<T> extends View
         return config.headerRowTextSize;
     }
 
+    public float getHeaderHeight(){
+        return config.drawingConfig.headerHeight;
+    }
+
     public void setHeaderRowTextSize(int textSize) {
         config.headerRowTextSize = textSize;
         invalidate();

@@ -61,7 +61,6 @@ class EventChip<T> {
 
 
         if (event.isNotAllDay()) {
-            canvas.drawRoundRect(rect, cornerRadius, cornerRadius, backgroundPaint);
             drawCornersForMultiDayEvents(backgroundPaint, cornerRadius, canvas);
         }
 
@@ -97,12 +96,6 @@ class EventChip<T> {
     }
 
     private void calculateTextHeightAndDrawTitle(WeekViewConfig config, Canvas canvas) {
-        final boolean negativeWidth = (rect.right - rect.left - config.eventPadding * 2) < 0;
-        final boolean negativeHeight = (rect.bottom - rect.top - config.eventPadding * 2) < 0;
-        if (negativeWidth || negativeHeight) {
-            return;
-        }
-
         // Prepare the name of the event.
         final SpannableStringBuilder stringBuilder = new SpannableStringBuilder();
         if (event.getTitle() != null) {

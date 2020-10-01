@@ -116,7 +116,7 @@ class EventChip<T> {
             stringBuilder.append(event.getLocation());
         }
 
-        final int availableHeight = (int) (rect.bottom - rect.top - config.eventPadding * 2);
+         int availableHeight = (int) (rect.bottom - rect.top - config.eventPadding * 2);
         final int availableWidth = (int) (rect.right - rect.left - config.eventPadding * 2);
 
         // Get text dimensions.
@@ -129,11 +129,12 @@ class EventChip<T> {
 
         final int lineHeight = textLayout.getHeight() / textLayout.getLineCount();
 
-        System.out.println("availableHeight "+ availableHeight + " LineHeight "+lineHeight);
+        System.out.println("old availableHeight "+ availableHeight + " LineHeight "+lineHeight);
         if (availableHeight < lineHeight) {
             rect = new RectF(rect.left, rect.top, rect.right, lineHeight + rect.top + config.eventPadding * 2);
-            draw(config, canvas);
-        } else {
+             availableHeight = (int) (rect.bottom - rect.top - config.eventPadding * 2);
+            System.out.println("new Available height "+ availableHeight);
+        }
             int availableLineCount = availableHeight / lineHeight;
             do {
                 // TODO: Don't truncate
@@ -148,10 +149,8 @@ class EventChip<T> {
                 // Repeat until text is short enough.
                 availableLineCount--;
             } while (textLayout.getHeight() > availableHeight);
-
             // Draw text.
             drawEventTitle(config, textLayout, canvas);
-        }
     }
 
     private void drawEventTitle(WeekViewConfig config, StaticLayout textLayout, Canvas canvas) {

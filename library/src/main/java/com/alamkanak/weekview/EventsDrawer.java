@@ -4,7 +4,6 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.graphics.Typeface;
-import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.text.SpannableStringBuilder;
 import android.text.StaticLayout;
@@ -52,7 +51,6 @@ class EventsDrawer<T> {
 
     private void drawEventsForDate(List<EventChip<T>> eventChips, Calendar date,
                                    float startFromPixel, Canvas canvas) {
-        final Canvas newCanvas = canvas;
         if (eventChips == null) {
             return;
         }
@@ -67,12 +65,7 @@ class EventsDrawer<T> {
             final RectF chipRect = rectCalculator.calculateSingleEvent(eventChip, startFromPixel);
             if (isValidSingleEventRect(chipRect)) {
                 eventChip.rect = chipRect;
-                final Handler handler = new Handler();
-
-                handler.post( new Runnable() {
-                    @Override
-                    public void run() { eventChip.draw(config, newCanvas); }});
-
+                eventChip.draw(config, canvas);
             } else {
                 eventChip.rect = null;
             }

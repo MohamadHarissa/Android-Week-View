@@ -32,6 +32,7 @@ class EventChip<T> {
     float width;
     float top;
     float bottom;
+    float dx, dy;
 
     /**
      * Create a new instance of event rect. An EventRect is actually the rectangle that is drawn
@@ -59,7 +60,8 @@ class EventChip<T> {
         final float cornerRadius = config.eventCornerRadius;
         final Paint backgroundPaint = getBackgroundPaint();
 
-
+        dx = rect.left + config.eventPadding;
+        dy = rect.top + config.eventPadding;
         if (event.isNotAllDay()) {
             drawCornersForMultiDayEvents(backgroundPaint, cornerRadius, canvas);
         }
@@ -109,7 +111,7 @@ class EventChip<T> {
             stringBuilder.append(event.getLocation());
         }
 
-         int availableHeight = (int) (rect.bottom - rect.top - config.eventPadding * 2);
+        int availableHeight = (int) (rect.bottom - rect.top - config.eventPadding * 2);
         final int availableWidth = (int) (rect.right - rect.left - config.eventPadding * 2);
 
         // Get text dimensions.
@@ -123,26 +125,28 @@ class EventChip<T> {
         final int lineHeight = textLayout.getHeight() / textLayout.getLineCount();
 
         if (availableHeight < lineHeight) {
-            rect = new RectF(rect.left, rect.top, rect.right, lineHeight + rect.top + config.eventPadding * 2);
-             availableHeight = (int) (rect.bottom - rect.top - config.eventPadding * 2);
-            canvas.drawRoundRect(rect, config.eventCornerRadius, config.eventCornerRadius, getBackgroundPaint());
+            RectF rect2 = new RectF(rect.left, rect.top, rect.right, lineHeight + rect.top + config.eventPadding * 2);
+            availableHeight = lineHeight;
+            dx = rect2.left + config.eventPadding;
+            dy = rect2.top + config.eventPadding;
+            canvas.drawRoundRect(rect2, config.eventCornerRadius, config.eventCornerRadius, getBackgroundPaint());
         }
-            int availableLineCount = availableHeight / lineHeight;
-            do {
-                // TODO: Don't truncate
-                // Ellipsize text to fit into event rect.
-                final int availableArea = availableLineCount * availableWidth;
-                final CharSequence ellipsized = TextUtils.ellipsize(stringBuilder,
-                        textPaint, availableArea, TextUtils.TruncateAt.END);
+        int availableLineCount = availableHeight / lineHeight;
+        do {
+            // TODO: Don't truncate
+            // Ellipsize text to fit into event rect.
+            final int availableArea = availableLineCount * availableWidth;
+            final CharSequence ellipsized = TextUtils.ellipsize(stringBuilder,
+                    textPaint, availableArea, TextUtils.TruncateAt.END);
 
-                final int width = (int) (rect.right - rect.left - config.eventPadding * 2);
-                textLayout = new StaticLayout(ellipsized, textPaint, width, ALIGN_NORMAL, 1.0f, 0.0f, false);
+            final int width = (int) (rect.right - rect.left - config.eventPadding * 2);
+            textLayout = new StaticLayout(ellipsized, textPaint, width, ALIGN_NORMAL, 1.0f, 0.0f, false);
 
-                // Repeat until text is short enough.
-                availableLineCount--;
-            } while (textLayout.getHeight() > availableHeight);
-            // Draw text.
-            drawEventTitle(config, textLayout, canvas);
+            // Repeat until text is short enough.
+            availableLineCount--;
+        } while (textLayout.getHeight() > availableHeight);
+        // Draw text.
+        drawEventTitle(config, textLayout, canvas);
     }
 
     private void drawEventTitle(WeekViewConfig config, StaticLayout textLayout, Canvas canvas) {
@@ -150,7 +154,7 @@ class EventChip<T> {
         final Paint backgroundPaint = getBackgroundPaint();
         canvas.drawRoundRect(rect, cornerRadius, cornerRadius, backgroundPaint);
         canvas.save();
-        canvas.translate(rect.left + config.eventPadding, rect.top + config.eventPadding);
+        canvas.translate(dx, dy);
         textLayout.draw(canvas);
         canvas.restore();
     }

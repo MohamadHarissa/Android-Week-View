@@ -43,7 +43,7 @@ class EventChip<T> {
      *
      * @param event         Represents the event which this instance of rectangle represents.
      * @param originalEvent The original event that was passed by the user.
-     * @param rect         The rectangle.
+     * @param rect          The rectangle.
      */
     EventChip(WeekViewEvent<T> event, WeekViewEvent<T> originalEvent, RectF rect) {
         this.event = event;
@@ -58,9 +58,10 @@ class EventChip<T> {
     void draw(WeekViewConfig config, @Nullable StaticLayout textLayout, Canvas canvas) {
         final float cornerRadius = config.eventCornerRadius;
         final Paint backgroundPaint = getBackgroundPaint();
-        canvas.drawRoundRect(rect, cornerRadius, cornerRadius, backgroundPaint);
+
 
         if (event.isNotAllDay()) {
+            canvas.drawRoundRect(rect, cornerRadius, cornerRadius, backgroundPaint);
             drawCornersForMultiDayEvents(backgroundPaint, cornerRadius, canvas);
         }
 
@@ -128,7 +129,10 @@ class EventChip<T> {
 
         final int lineHeight = textLayout.getHeight() / textLayout.getLineCount();
 
-        if (availableHeight >= lineHeight) {
+        if (availableHeight < lineHeight) {
+            rect.set(rect.left, rect.top, rect.right, lineHeight + rect.top + config.eventPadding * 2);
+            draw(config, textLayout, canvas);
+        } else {
             int availableLineCount = availableHeight / lineHeight;
             do {
                 // TODO: Don't truncate
@@ -150,6 +154,9 @@ class EventChip<T> {
     }
 
     private void drawEventTitle(WeekViewConfig config, StaticLayout textLayout, Canvas canvas) {
+        final float cornerRadius = config.eventCornerRadius;
+        final Paint backgroundPaint = getBackgroundPaint();
+        canvas.drawRoundRect(rect, cornerRadius, cornerRadius, backgroundPaint);
         canvas.save();
         canvas.translate(rect.left + config.eventPadding, rect.top + config.eventPadding);
         textLayout.draw(canvas);

@@ -125,11 +125,14 @@ class EventChip<T> {
         final int lineHeight = textLayout.getHeight() / textLayout.getLineCount();
 
         if (availableHeight < lineHeight) {
-            RectF rect2 = new RectF(rect.left, rect.top, rect.right, lineHeight + rect.top + config.eventPadding * 2);
+            rect.set(rect.left, rect.top, rect.right, lineHeight + rect.top + config.eventPadding * 2);
+            /*
+            rect.set(rect2);
             availableHeight = lineHeight;
             dx = rect2.left + config.eventPadding;
             dy = rect2.top + config.eventPadding;
-            canvas.drawRoundRect(rect2, config.eventCornerRadius, config.eventCornerRadius, getBackgroundPaint());
+             */
+            canvas.drawRoundRect(rect, config.eventCornerRadius, config.eventCornerRadius, getBackgroundPaint());
         }
         int availableLineCount = availableHeight / lineHeight;
         do {
@@ -154,7 +157,7 @@ class EventChip<T> {
         final Paint backgroundPaint = getBackgroundPaint();
         canvas.drawRoundRect(rect, cornerRadius, cornerRadius, backgroundPaint);
         canvas.save();
-        canvas.translate(dx, dy);
+        canvas.translate(rect.left + config.eventPadding, rect.top + config.eventPadding);
         textLayout.draw(canvas);
         canvas.restore();
     }

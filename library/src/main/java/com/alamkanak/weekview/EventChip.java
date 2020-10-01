@@ -129,9 +129,10 @@ class EventChip<T> {
 
         final int lineHeight = textLayout.getHeight() / textLayout.getLineCount();
 
+        System.out.println("availableHeight "+ availableHeight + " LineHeight "+lineHeight);
         if (availableHeight < lineHeight) {
-            rect.set(rect.left, rect.top, rect.right, lineHeight + rect.top + config.eventPadding * 2);
-            draw(config, textLayout, canvas);
+            rect = new RectF(rect.left, rect.top, rect.right, lineHeight + rect.top + config.eventPadding * 2);
+            draw(config, canvas);
         } else {
             int availableLineCount = availableHeight / lineHeight;
             do {

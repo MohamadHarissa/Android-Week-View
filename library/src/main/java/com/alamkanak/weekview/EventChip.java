@@ -59,9 +59,10 @@ class EventChip<T> {
     void draw(WeekViewConfig config, @Nullable StaticLayout textLayout, Canvas canvas) {
         final float cornerRadius = config.eventCornerRadius;
         final Paint backgroundPaint = getBackgroundPaint();
-        canvas.drawRoundRect(rect, cornerRadius, cornerRadius, backgroundPaint);
+
 
         if (event.isNotAllDay()) {
+            canvas.drawRoundRect(rect, cornerRadius, cornerRadius, backgroundPaint);
             drawCornersForMultiDayEvents(backgroundPaint, cornerRadius, canvas);
         }
 

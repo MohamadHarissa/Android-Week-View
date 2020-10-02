@@ -27,7 +27,7 @@ class EventChip<T> {
     final WeekViewEvent<T> event;
     final WeekViewEvent<T> originalEvent;
 
-    RectF rect, rect2;
+    RectF rect;
     float left;
     float width;
     float top;
@@ -59,6 +59,7 @@ class EventChip<T> {
     void draw(WeekViewConfig config, @Nullable StaticLayout textLayout, Canvas canvas) {
         final float cornerRadius = config.eventCornerRadius;
         final Paint backgroundPaint = getBackgroundPaint();
+        canvas.drawRoundRect(rect, cornerRadius, cornerRadius, backgroundPaint);
 
         if (event.isNotAllDay()) {
             drawCornersForMultiDayEvents(backgroundPaint, cornerRadius, canvas);
@@ -123,7 +124,7 @@ class EventChip<T> {
         final int lineHeight = textLayout.getHeight() / textLayout.getLineCount();
 
         if (availableHeight < lineHeight) {
-            rect2 = new RectF(rect);
+            canvas.drawRoundRect(rect, config.eventCornerRadius, config.eventCornerRadius, getBackgroundPaint());
             rect.set(rect.left, rect.top, rect.right, lineHeight + rect.top + config.eventPadding * 2);
             availableHeight = lineHeight;
         }
@@ -149,13 +150,10 @@ class EventChip<T> {
         final float cornerRadius = config.eventCornerRadius;
         final Paint backgroundPaint = getBackgroundPaint();
         canvas.drawRoundRect(rect, cornerRadius, cornerRadius, backgroundPaint);
-        if(rect2 != null)
-            canvas.drawRoundRect(rect2, cornerRadius, cornerRadius,  backgroundPaint);
         canvas.save();
         canvas.translate(rect.left + config.eventPadding, rect.top + config.eventPadding);
         textLayout.draw(canvas);
         canvas.restore();
-        rect2 = null;
     }
 
     boolean isHit(MotionEvent e) {

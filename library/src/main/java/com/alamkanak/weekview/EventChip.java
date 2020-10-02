@@ -27,7 +27,7 @@ class EventChip<T> {
     final WeekViewEvent<T> event;
     final WeekViewEvent<T> originalEvent;
 
-    RectF rect, rect2;
+    RectF rect;
     float left;
     float width;
     float top;
@@ -125,12 +125,6 @@ class EventChip<T> {
         if (availableHeight < lineHeight) {
             rect.set(rect.left, rect.top, rect.right, lineHeight + rect.top + config.eventPadding * 2);
             availableHeight = lineHeight;
-            /*
-            rect.set(rect2);
-
-            dx = rect2.left + config.eventPadding;
-            dy = rect2.top + config.eventPadding;
-             */
             canvas.drawRoundRect(rect, config.eventCornerRadius, config.eventCornerRadius, getBackgroundPaint());
         }
         int availableLineCount = availableHeight / lineHeight;

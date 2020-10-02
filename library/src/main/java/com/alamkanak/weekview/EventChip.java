@@ -125,7 +125,6 @@ class EventChip<T> {
         final int lineHeight = textLayout.getHeight() / textLayout.getLineCount();
 
         if (availableHeight < lineHeight) {
-            canvas.drawRoundRect(rect, config.eventCornerRadius, config.eventCornerRadius, getBackgroundPaint());
             rect.set(rect.left, rect.top, rect.right, lineHeight + rect.top + config.eventPadding * 2);
             availableHeight = lineHeight;
         }

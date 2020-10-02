@@ -150,7 +150,7 @@ class EventChip<T> {
         final Paint backgroundPaint = getBackgroundPaint();
         canvas.drawRoundRect(rect, cornerRadius, cornerRadius, backgroundPaint);
         if(rect2 != null)
-            canvas.drawRoundRect(rect2, config.eventCornerRadius, config.eventCornerRadius, getBackgroundPaint());
+            canvas.drawRoundRect(rect2, cornerRadius, cornerRadius,  backgroundPaint);
         canvas.save();
         canvas.translate(rect.left + config.eventPadding, rect.top + config.eventPadding);
         textLayout.draw(canvas);

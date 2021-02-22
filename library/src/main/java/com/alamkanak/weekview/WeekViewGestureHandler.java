@@ -69,11 +69,13 @@ final class WeekViewGestureHandler<T> extends GestureDetector.SimpleOnGestureLis
         scaleDetector = new ScaleGestureDetector(context, new ScaleGestureDetector.OnScaleGestureListener() {
             @Override
             public void onScaleEnd(ScaleGestureDetector detector) {
+                System.out.println("Scale end");
                 isZooming = false;
             }
 
             @Override
             public boolean onScaleBegin(ScaleGestureDetector detector) {
+                System.out.println("Scale started");
                 isZooming = true;
                 goToNearestOrigin();
                 return true;
@@ -81,6 +83,7 @@ final class WeekViewGestureHandler<T> extends GestureDetector.SimpleOnGestureLis
 
             @Override
             public boolean onScale(ScaleGestureDetector detector) {
+                System.out.println("on Scale");
                 float hourHeight = WeekViewGestureHandler.this.config.hourHeight;
                 drawingConfig.newHourHeight = hourHeight * detector.getScaleFactor();
                 listener.onScaled();

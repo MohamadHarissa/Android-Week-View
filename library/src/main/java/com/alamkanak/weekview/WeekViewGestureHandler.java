@@ -66,7 +66,7 @@ final class WeekViewGestureHandler<T> extends GestureDetector.SimpleOnGestureLis
         minimumFlingVelocity = ViewConfiguration.get(context).getScaledMinimumFlingVelocity();
         scaledTouchSlop = ViewConfiguration.get(context).getScaledTouchSlop();
 
-        scaleDetector = new ScaleGestureDetector(context, new ScaleGestureDetector.OnScaleGestureListener() {
+        scaleDetector = new ScaleGestureDetector(context, new ScaleGestureDetector.SimpleOnScaleGestureListener() {
             @Override
             public void onScaleEnd(ScaleGestureDetector detector) {
                 System.out.println("Scale end");

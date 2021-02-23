@@ -221,7 +221,6 @@ public final class WeekView<T> extends View
 
     @Override
     public void onScaled() {
-        System.out.println("onScaled override");
         invalidate();
     }
 
@@ -233,7 +232,6 @@ public final class WeekView<T> extends View
     @Override
     public void invalidate() {
         super.invalidate();
-        System.out.println("invalidate override");
         viewState.invalidate();
     }
 

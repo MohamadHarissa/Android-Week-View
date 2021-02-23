@@ -396,9 +396,8 @@ final class WeekViewGestureHandler<T> extends GestureDetector.SimpleOnGestureLis
     }
 
     boolean onTouchEvent(MotionEvent event) {
-        scaleDetector.onTouchEvent(event);
-        System.out.println(event);
-        System.out.println(event.getPointerCount());
+       final boolean handled = scaleDetector.onTouchEvent(event);
+        System.out.println(event.getPointerCount() +" "+ handled);
         final boolean val = gestureDetector.onTouchEvent(event);
 
         // Check after call of gestureDetector, so currentFlingDirection and currentScrollDirection are set
